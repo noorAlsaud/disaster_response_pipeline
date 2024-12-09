@@ -1,5 +1,6 @@
 import sys
 import pandas as pd
+from sqlalchemy import create_engine
 
 
 def load_data(messages_filepath, categories_filepath):
@@ -13,18 +14,52 @@ def load_data(messages_filepath, categories_filepath):
     Returns:
     df: pandas one dataFrame acheived by merging the args.
     """
-    
-    messages = pd.read_csv(messages_file_path)
-    categories = pd.read_csv(categories_file_path)
-    df = messages.merge(categories, on='id') 
+    messages = pd.read_csv(messages_filepath)
+    categories = pd.read_csv(categories_filepath)
+    df = pd.merge(messages, categories, on='id') 
     return df
 
 def clean_data(df):
-    pass
+    
+    """Clean the Dataframe that has been merged 
 
+    Args: 
+    df: the dataframe that contains the messages and categories
+
+    returns: 
+    dataframe after cleaning process
+
+    """
+
+    # Split the Categories
+    categories = df['categories'].str.split(';', expand=True) 
+    # Create a list of new column names based on the first row of the categories DataFrame
+    category_colnames = [category.split('-')[0] for category in categories.iloc[0]]
+
+    # Rename the columns of the categories DataFrame
+    categories.columns = category_colnames
+
+    # Convert the values to binary (0 or 1)
+    for column in categories:
+        categories[column] = categories[column].str[-1].astype(int)
+
+    # Drop the original 'categories' column from the main DataFrame
+    df = df.drop('categories', axis=1)
+
+    # Concatenate the original DataFrame with the new categories DataFrame
+    df = pd.concat([df, categories], axis=1)
+
+    return df
 
 def save_data(df, database_filename):
-    pass  
+        """Save df in the SQL server
+
+        Args:
+        df: the dataframe to be saved
+        database_filename: the file name of the saved data 
+        """
+        engine = create_engine('sqlite:///'+database_filename)
+        df.to_sql('DisasterResponse', engine,if_exists = 'replace', index=False)  
 
 
 def main():
