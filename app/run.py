@@ -68,11 +68,12 @@ def index():
     ] 
 
     """
+    Visual (1): Distribution of Message Categories
     this data needed to represents the Distribution of Massage Categories as a Bar chart, 
-    X-Axis: Categories of messages
+    X-Axis: Categories of messages 
     Y-Axis: total number of messages thaat lay into each category 
     
-    Higher bars indicate categories with more messages.
+    Higher bars indicate categories with more messages. 
 
     """
     category_counts = df.iloc[:, 4:].sum().sort_values(ascending=False)
