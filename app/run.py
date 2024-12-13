@@ -1,17 +1,16 @@
 import json
 import plotly
 import pandas as pd
-
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
-from sklearn.externals import joblib
+# from sklearn.externals import joblib
 from sqlalchemy import create_engine
-
-
+import joblib
+from sqlalchemy import create_engine
+from plotly.graph_objs import Heatmap
 app = Flask(__name__)
 
 def tokenize(text):
@@ -25,12 +24,13 @@ def tokenize(text):
 
     return clean_tokens
 
+database_filename = 'data/DisasterResponse.db'
+
 # load data
 engine = create_engine('sqlite:///'+database_filename)
-df.to_sql('DisasterResponse', engine,if_exists = 'replace', index=False) 
-
-# load model
-model = joblib.load("../models/train_classifier.py")
+df = pd.read_sql_table('DisasterResponse', engine)
+# load model            
+model = joblib.load("models/classifier.pkl")
 
 
 # index webpage displays cool visuals and receives user input text for model
@@ -42,7 +42,7 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
-    
+
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
@@ -63,9 +63,34 @@ def index():
                     'title': "Genre"
                 }
             }
-        }
-    ]
+        },  
+        
+    ] 
+
+    """
+    this data needed to represents the Distribution of Massage Categories as a Bar chart, 
+    X-Axis: Categories of messages
+    Y-Axis: total number of messages thaat lay into each category 
     
+    Higher bars indicate categories with more messages.
+
+    """
+    category_counts = df.iloc[:, 4:].sum().sort_values(ascending=False)
+    category_names = list(category_counts.index)
+    graphs.append({
+    'data': [
+        Bar(
+            x=category_names,
+            y=category_counts
+        )
+    ],
+    'layout': {
+        'title': 'Distribution of Message Categories',
+        'yaxis': {'title': "Count"},
+        'xaxis': {'title': "Category", 'tickangle': -45}
+    }
+})
+   
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
