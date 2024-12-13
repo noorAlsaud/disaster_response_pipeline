@@ -18,11 +18,12 @@ This project was completed as a requirement for my Nanodegree program in Data Sc
 ![Screenshot 2024-12-11 111145](https://github.com/user-attachments/assets/d132dff1-602a-4e54-aab9-2f8a4c817d0b)
 
     - Screenshot of the Disaster Response Pipeline Project: 
-    ![Screenshot 2024-12-11 152850](https://github.com/user-attachments/assets/19996e64-73c0-4758-922a-1ef51d316de1)
+![Screenshot 2024-12-11 152850](https://github.com/user-attachments/assets/19996e64-73c0-4758-922a-1ef51d316de1)
+
 ![Screenshot 2024-12-11 152806](https://github.com/user-attachments/assets/3a815135-0ebc-4181-8d68-b30ec2d706e7)
 
     - Screenshot of the Bar chart exists on the Project: 
-    ![distributionMessageGenres](https://github.com/user-attachments/assets/1b6da375-79ff-4eb4-bf3d-7313060dc2dc)
+![distributionMessageGenres](https://github.com/user-attachments/assets/1b6da375-79ff-4eb4-bf3d-7313060dc2dc)
 
     - Screenshot of Visual (1):  Distribution of Message Categories
 ![distributionMessageCategories](https://github.com/user-attachments/assets/651448a7-2853-40e0-a136-16d48fc72e09)
