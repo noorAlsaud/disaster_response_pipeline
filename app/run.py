@@ -92,6 +92,38 @@ def index():
     }
 })
    
+    
+    """
+    Visual (2): Correlation Heatmap of Message Categories
+    This data is used to represent the Correlation Heatmap of Message Categories, 
+    showing the relationship between different categories of messages.
+
+    X-Axis: Categories of messages
+    Y-Axis: Categories of messages
+
+    The color intensity indicates the strength of the correlation between categories:
+    - Darker colors represent higher correlations.
+    - Lighter colors represent lower correlations.
+
+    This visualization helps to identify how often different categories co-occur.
+    """
+    category_corr = df.iloc[:, 4:].corr()
+    graphs.append({
+    'data': [
+        Heatmap(
+            z=category_corr.values,
+            x=category_corr.columns,
+            y=category_corr.columns,
+            colorscale='Viridis'
+        )
+    ],
+    'layout': {
+        'title': 'Correlation Heatmap of Message Categories',
+        'xaxis': {'title': "Category"},
+        'yaxis': {'title': "Category"}
+    }
+})
+   
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
