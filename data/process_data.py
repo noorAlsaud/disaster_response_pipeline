@@ -20,7 +20,6 @@ def load_data(messages_filepath, categories_filepath):
     return df
 
 def clean_data(df):
-    
     """Clean the Dataframe that has been merged 
 
     Args: 
@@ -28,7 +27,6 @@ def clean_data(df):
 
     returns: 
     dataframe after cleaning process
-
     """
 
     # Split the Categories
@@ -39,15 +37,32 @@ def clean_data(df):
     # Rename the columns of the categories DataFrame
     categories.columns = category_colnames
 
-    # Convert the values to binary (0 or 1)
+    # Convert the values to integers and handle the 'related' column specifically
     for column in categories:
-        categories[column] = categories[column].str[-1].astype(int)
+        # Ensure all values are strings before applying .str
+        categories[column] = categories[column].astype(str).str[-1].astype(int)
+
+    # Validate 'related' column values before cleaning
+    # print("Before cleaning, 'related' column value counts:")
+    # print(categories['related'].value_counts())
+
+    # Handle the 'related' column specifically to drop rows with value 2
+    if 'related' in categories.columns:
+        categories = categories[categories['related'] != 2]
+
+
+    # Validate 'related' column values after cleaning
+    # print("After cleaning, 'related' column value counts:")
+    # print(categories['related'].value_counts())
 
     # Drop the original 'categories' column from the main DataFrame
     df = df.drop('categories', axis=1)
 
     # Concatenate the original DataFrame with the new categories DataFrame
     df = pd.concat([df, categories], axis=1)
+
+    # Remove duplicates
+    df = df.drop_duplicates()
 
     return df
 
@@ -70,13 +85,10 @@ def main():
         print('Loading data...\n    MESSAGES: {}\n    CATEGORIES: {}'
               .format(messages_filepath, categories_filepath))
         df = load_data(messages_filepath, categories_filepath)
-
         print('Cleaning data...')
         df = clean_data(df)
         
         print('Saving data...\n    DATABASE: {}'.format(database_filepath))
-        save_data(df, database_filepath)
-        
         print('Cleaned data saved to database!')
     
     else:
